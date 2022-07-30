@@ -17,5 +17,6 @@ class OpenGymInterface {
     private:
         omnetpp::cSimulation* _sim;
         OpenGymEnv* _env;
+        omnetpp::cStaticFlag* _dummy;
 };  
 #endif

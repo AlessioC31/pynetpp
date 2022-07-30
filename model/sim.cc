@@ -80,19 +80,16 @@ float OpenGymEnv::get_reward() {
 }
 
 OpenGymInterface::OpenGymInterface() {
+    _dummy = new cStaticFlag();
+    cEnvir* omnetpp_env = new MinimalEnv(0, NULL, new EmptyConfig());
+    cSimulation* sim = new cSimulation("simulation", omnetpp_env);
 
+    OpenGymEnv* gym_env = new OpenGymEnv(sim);
+    _env = gym_env;
+    _sim = sim;
 }
 
 void OpenGymInterface::startup() {
-    cStaticFlag* dummy = new cStaticFlag();
-
-    cEnvir* env = new MinimalEnv(0, NULL, new EmptyConfig());
-    cSimulation* sim = new cSimulation("simulation", env);
-    OpenGymEnv* gymenv = new OpenGymEnv(sim);
-
-    _env = gymenv;
-    _sim = sim;
-
     CodeFragments::executeAll(CodeFragments::STARTUP);
     SimTime::setScaleExp(-12);
     cSimulation::setActiveSimulation(_sim);

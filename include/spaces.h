@@ -13,11 +13,11 @@ class OpenGymSpace {
 class OpenGymDiscreteSpace : public OpenGymSpace {
     public:
         OpenGymDiscreteSpace();
-        OpenGymDiscreteSpace(int n);
-        int get_n();
+        OpenGymDiscreteSpace(uint32_t n);
+        uint32_t get_n();
 
     private:
-        int space_n;
+        uint32_t space_n;
 };
 
 class OpenGymBoxSpace : public OpenGymSpace {

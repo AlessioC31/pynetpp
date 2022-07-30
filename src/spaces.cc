@@ -1,11 +1,12 @@
 #include "spaces.h"
 #include "dtypes.h"
+#include <cstdint>
 #include <vector>
 
 OpenGymDiscreteSpace::OpenGymDiscreteSpace() {};
-OpenGymDiscreteSpace::OpenGymDiscreteSpace(int n) : space_n(n) { };
+OpenGymDiscreteSpace::OpenGymDiscreteSpace(uint32_t n) : space_n(n) { };
 
-int OpenGymDiscreteSpace::get_n() {
+uint32_t OpenGymDiscreteSpace::get_n() {
     return space_n;
 }
 
