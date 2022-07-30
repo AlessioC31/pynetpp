@@ -121,6 +121,28 @@ void OpenGymInterface::execute_step() {
     }
 }
 
+void OpenGymInterface::reset() {
+     _sim->callFinish();
+    _sim->deleteNetwork();
+    _sim->setActiveSimulation(nullptr);
+    delete _sim;
+    
+    cEnvir* omnetpp_env = new MinimalEnv(0, NULL, new EmptyConfig());
+    cSimulation* sim = new cSimulation("simulation", omnetpp_env);
+
+    OpenGymEnv* gym_env = new OpenGymEnv(sim);
+    _env = gym_env;
+    _sim = sim;
+
+    cSimulation::setActiveSimulation(_sim);
+    cModuleType* networkType = cModuleType::find("Loadbalancernet");
+
+    _sim->setupNetwork(networkType);
+    _sim->setSimulationTimeLimit(1000);
+
+    _sim->callInitialize();
+}
+
 void OpenGymInterface::stop() {
     _sim->callFinish();
     _sim->deleteNetwork();

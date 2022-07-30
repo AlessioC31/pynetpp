@@ -10,6 +10,7 @@ void bind_interface(pybind11::module_ &m) {
         .def(pybind11::init<>())
         .def("startup", &OpenGymInterface::startup)
         .def("execute_step", &OpenGymInterface::execute_step)
+        .def("reset", &OpenGymInterface::reset)
         .def("stop", &OpenGymInterface::stop)
         .def("get_env", &OpenGymInterface::get_env);
 }
