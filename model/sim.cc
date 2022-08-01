@@ -110,15 +110,21 @@ void OpenGymInterface::startup() {
 }
 
 void OpenGymInterface::execute_step() {
-    for (int i = 0; i < 5; i ++) {
-        cEvent* event = _sim->takeNextEvent();
+    try {
+        for (int i = 0; i < 5; i ++) {
+            cEvent* event =  _sim->takeNextEvent();
 
-        if (event) {
-            _sim->executeEvent(event);
-        } else {
-            _env->set_game_over(true);
+            if (event) {
+                _sim->executeEvent(event);
+            } else {
+                _env->set_game_over(true);
+                break;
+            }
         }
+    } catch (cTerminationException& e) {
+        _env->set_game_over(true);
     }
+
 }
 
 void OpenGymInterface::reset() {

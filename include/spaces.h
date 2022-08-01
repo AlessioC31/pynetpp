@@ -1,5 +1,6 @@
 #include <vector>
 #include <cstdint>
+#include <string>
 #include "dtypes.h"
 
 #ifndef gym_env_spaces
@@ -7,6 +8,7 @@
 class OpenGymSpace {
     public:
         OpenGymSpace() {};
+        virtual std::string get_space_type() = 0;
         // virtual ~OpenGymSpace();
 };
 
@@ -15,6 +17,7 @@ class OpenGymDiscreteSpace : public OpenGymSpace {
         OpenGymDiscreteSpace();
         OpenGymDiscreteSpace(uint32_t n);
         uint32_t get_n();
+        std::string get_space_type() override { return "discrete"; }
 
     private:
         uint32_t space_n;
@@ -30,6 +33,7 @@ class OpenGymBoxSpace : public OpenGymSpace {
         float get_low();
         float get_high();
         std::vector<uint32_t> get_shape();
+        std::string get_space_type() override { return "box"; }
 
     private:
         float space_low;
