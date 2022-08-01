@@ -30,6 +30,5 @@ void bind_spaces(pybind11::module_ &m) {
         .def("get_low", &OpenGymBoxSpace::get_low)
         .def("get_high", &OpenGymBoxSpace::get_high)
         .def("get_space_type", &OpenGymBoxSpace::get_space_type)
-        .def("aaa", &OpenGymBoxSpace::aaa)
         .def("get_shape", &OpenGymBoxSpace::get_shape);
 }

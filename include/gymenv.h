@@ -12,7 +12,7 @@ class OpenGymEnv {
         bool game_over;
 
     public:
-        OpenGymEnv(omnetpp::cSimulation* omnet_sim) : _omnet_sim(omnet_sim) {}; 
+        OpenGymEnv(omnetpp::cSimulation* omnet_sim) : _omnet_sim(omnet_sim), game_over(false) {}; 
         // virtual ~OpenGymEnv();
 
         OpenGymSpace& get_observation_space();

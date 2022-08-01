@@ -1,4 +1,5 @@
 #include <pybind11/pybind11.h>
+#include <omnetpp.h>
 
 extern void bind_spaces(pybind11::module_ &m);
 extern void bind_dtypes(pybind11::module_ &m);
@@ -14,4 +15,6 @@ PYBIND11_MODULE(omnetgym, m) {
     bind_container(m);
     bind_gymenv(m);
     bind_interface(m);
+
+    pybind11::register_exception<omnetpp::cTerminationException>(m, "TimeLimitError");
 }

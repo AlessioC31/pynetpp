@@ -104,31 +104,33 @@ void OpenGymInterface::startup() {
     }
 
     _sim->setupNetwork(networkType);
-    _sim->setSimulationTimeLimit(1000);
+    _sim->setSimulationTimeLimit(100);
 
     _sim->callInitialize();
 }
 
 void OpenGymInterface::execute_step() {
-    try {
-        for (int i = 0; i < 5; i ++) {
-            cEvent* event =  _sim->takeNextEvent();
+    // try {
+    for (int i = 0; i < 5; i ++) {
+        cEvent* event =  _sim->takeNextEvent();
+        std::cout<<_sim->getSimTime()<<endl;
 
-            if (event) {
-                _sim->executeEvent(event);
-            } else {
-                _env->set_game_over(true);
-                break;
-            }
+        if (event) {
+            _sim->executeEvent(event);
+        } else {
+            _env->set_game_over(true);
+            break;
         }
-    } catch (cTerminationException& e) {
-        _env->set_game_over(true);
     }
+    // } catch (cTerminationException& e) {
+    //     std::cout<<"FINEMMU-------------"<<endl;
+    //     _env->set_game_over(true);
+    // }
 
 }
 
 void OpenGymInterface::reset() {
-     _sim->callFinish();
+    _sim->callFinish();
     _sim->deleteNetwork();
     _sim->setActiveSimulation(nullptr);
     delete _sim;
@@ -144,7 +146,7 @@ void OpenGymInterface::reset() {
     cModuleType* networkType = cModuleType::find("Loadbalancernet");
 
     _sim->setupNetwork(networkType);
-    _sim->setSimulationTimeLimit(1000);
+    _sim->setSimulationTimeLimit(100);
 
     _sim->callInitialize();
 }
