@@ -3,8 +3,8 @@ OMNET_INCLUDES = -I$(OMNETPP_ROOT)/include
 OMNET_LIBFLAGS = -L$(OMNETPP_ROOT)/lib
 BINDINGS_TARGET = omnetgym$(shell python3-config --extension-suffix)
 PYBIND11_INCLUDES = `python3 -m pybind11 --includes`
-CXXFLAGS_DEBUG = -O0 -Wall -std=c++14 -fPIC -g
-CXXFLAGS_RELEASE = -O3 -Wall -std=c++14 -fPIC
+CXXFLAGS_DEBUG = -O0 -Wall -std=c++20 -fPIC -g
+CXXFLAGS_RELEASE = -O3 -Wall -std=c++20 -fPIC
 OMNET_LIBRARY_NAME_DEBUG = oppsim_dbg
 OMNET_LIBRARY_NAME_RELEASE = oppsim
 
@@ -26,6 +26,8 @@ MODEL_SOURCES = $(wildcard $(MODEL_SOURCE_DIR)/*.cc)
 BINDINGS_DIR = ./extras/bindings
 BINDINGS_SOURCES = $(wildcard $(BINDINGS_DIR)/*.cc)
 
+TEST_DIR= ./test
+TEST_SOURCES = $(wildcard $(TEST_DIR)/*.cc)
 
 TARGET = omnetgym
 
@@ -35,12 +37,27 @@ DIST = ./dist
 OBJS = $(SOURCES:$(SOURCE_DIR)/%.cc=$(O)/%.o)
 MODEL_OBJS = $(MODEL_SOURCES:$(MODEL_SOURCE_DIR)/%.cc=$(DIST)/%.o)
 BINDINGS_OBJS = $(BINDINGS_SOURCES:$(BINDINGS_DIR)/%.cc=$(DIST)/%.o)
+TEST_OBJS = $(TEST_SOURCES:$(TEST_DIR)/%.cc=$(TEST_DIR)/%.o)
+
+cleantest:
+	@rm $(TEST_DIR)/*.o
+	
+runtest: $(TEST_DIR)/test
+	./$(TEST_DIR)/test
+
+test: $(TEST_OBJS)
+	@echo Building tests
+	@g++ $(CXXFLAGS) -L/home/alessioc/pynetpp/build $(TEST_OBJS) -o $(TEST_DIR)/test -lomnetgym
+
+$(TEST_DIR)/%.o: $(TEST_DIR)/%.cc
+	@echo Compiling $@
+	@g++ $(CXXFLAGS) -Iinclude -c $< -o $@
 
 all: mainlib bindings
 
 bindings: $(DIST) $(BINDINGS_OBJS) $(MODEL_OBJS)
 	@echo Building python bindings with DEBUG=$(DEBUG)
-	@g++ $(CXXFLAGS) -shared $(OMNET_LIBFLAGS) $(PYBIND11_INCLUDES) `python-config --ldflags` -L/home/alessioc/pynetpp/build $(MODEL_OBJS) $(BINDINGS_OBJS) -o $(DIST)/$(BINDINGS_TARGET) -l$(OMNET_LIBRARY_NAME) -lomnetgym
+	@g++ $(CXXFLAGS) -shared $(OMNET_LIBFLAGS) $(PYBIND11_INCLUDES) -L/home/alessioc/pynetpp/build $(MODEL_OBJS) $(BINDINGS_OBJS) -o $(DIST)/$(BINDINGS_TARGET) -l$(OMNET_LIBRARY_NAME) -lomnetgym
 
 $(DIST)/%.o: $(BINDINGS_DIR)/%.cc
 	@echo Compiling $@
