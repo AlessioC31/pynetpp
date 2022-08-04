@@ -9,5 +9,5 @@ template <> OpenGymDType get_dtype<uint8_t> () { return UINT8; }
 template <> OpenGymDType get_dtype<uint16_t> () { return UINT16; }
 template <> OpenGymDType get_dtype<uint32_t> () { return UINT32; }
 template <> OpenGymDType get_dtype<uint64_t> () { return UINT64; }
-template <> OpenGymDType get_dtype<float> () { return DOUBLE; }
-template <> OpenGymDType get_dtype<double> () { return FLOAT; }
+template <> OpenGymDType get_dtype<float> () { return FLOAT; }
+template <> OpenGymDType get_dtype<double> () { return DOUBLE; }

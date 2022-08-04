@@ -59,10 +59,10 @@ OpenGymSpace& OpenGymEnv::get_action_space() {
 OpenGymContainer& OpenGymEnv::get_observation() {
     OpenGymBoxContainer<float>& to_ret = *new OpenGymBoxContainer<float>(std::vector<uint32_t> {3});
 
-    for (int i = 0; i < 4; i ++) {
+    for (unsigned i = 0; i < 4; i ++) {
         std::string module_name = "Loadbalancernet.server[" + std::to_string(i) + "]";
         loadbalancing::Server* s = (loadbalancing::Server*) _omnet_sim->getModuleByPath(module_name.c_str());
-        to_ret.add_value(s->get_load());
+        to_ret({i}) = s->get_load();
     }
 
     return to_ret;
@@ -160,31 +160,31 @@ void OpenGymInterface::stop() {
     CodeFragments::executeAll(CodeFragments::SHUTDOWN);
 }
 
-int main() {
-    OpenGymInterface* interface = new OpenGymInterface();
-    interface->startup();
-    for (int i = 0; i < 5; i ++)
-        interface->execute_step();
+// int main() {
+//     OpenGymInterface* interface = new OpenGymInterface();
+//     interface->startup();
+//     for (int i = 0; i < 5; i ++)
+//         interface->execute_step();
     
-    // interface->startup();
-    // interface->stop();
-    // interface->execute_step();
+//     // interface->startup();
+//     // interface->stop();
+//     // interface->execute_step();
 
-    OpenGymDiscreteContainer* act_container = new OpenGymDiscreteContainer(4);
-    act_container->set_value(1);
+//     OpenGymDiscreteContainer* act_container = new OpenGymDiscreteContainer(4);
+//     act_container->set_value(1);
 
-    interface->get_env().execute_action(*act_container);
-    for (int i = 0; i < 5; i ++)
-        interface->execute_step();
+//     interface->get_env().execute_action(*act_container);
+//     for (int i = 0; i < 5; i ++)
+//         interface->execute_step();
 
-    OpenGymBoxContainer<float>& obs = (OpenGymBoxContainer<float>&) interface->get_env().get_observation();
-    std::vector<float> v = obs.get_data();
+//     OpenGymBoxContainer<float>& obs = (OpenGymBoxContainer<float>&) interface->get_env().get_observation();
+//     std::vector<float> v = obs.get_data();
 
-    for (float el : v) {
-        std::cout<<el<<endl;
-    }
+//     for (float el : v) {
+//         std::cout<<el<<endl;
+//     }
 
-    interface->stop();
+//     interface->stop();
 
-    return 0;
-}
+//     return 0;
+// }
