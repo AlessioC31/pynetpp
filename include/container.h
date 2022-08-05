@@ -44,6 +44,7 @@ class OpenGymBoxContainer : public OpenGymContainer{
 
         // void set_data(std::vector<T> data);
         // std::vector<T> get_data();
+        // inline void set_data(T* data) { inner_data = data; }
         inline T* get_data() { return inner_data; }
         inline uint32_t get_size() { return size; }
         inline std::vector<uint32_t> get_strides() { return strides; }
@@ -81,7 +82,6 @@ OpenGymBoxContainer<T>::OpenGymBoxContainer() {
 template<typename T>
 OpenGymBoxContainer<T>::OpenGymBoxContainer(const OpenGymBoxContainer& that) {
     //TODO: what if that is an empy container (shape.size() == 0)
-    
     space_shape = that.space_shape;
     strides = that.strides;
     size = that.size;
@@ -107,6 +107,7 @@ OpenGymBoxContainer<T>& OpenGymBoxContainer<T>::operator=(OpenGymBoxContainer ot
 //TODO: maybe change vector to something else
 template<typename T>
 T& OpenGymBoxContainer<T>::operator()(std::vector<uint32_t> idxs) {
+
     if (idxs.size() != space_shape.size()) {
         throw std::invalid_argument("Invalid dimensions numbers.");
         //  throw std::invalid_argument("Expected " + space_shape.size() + " dimensions, got " + idxs.size() + ".", space_shape.size(), idxs.size());
@@ -114,14 +115,16 @@ T& OpenGymBoxContainer<T>::operator()(std::vector<uint32_t> idxs) {
 
     uint32_t n = space_shape.size();
     uint32_t idx = 0;
-
+    
     for (uint32_t i = 0; i < n; i ++) {
         if (idxs[i] >= space_shape[i]) {
             throw std::invalid_argument("Invalid index.");
             // throw std::out_of_range(std::format("Dimension {} has a size of {} but got index {}.", i, space_shape[i], idxs[i]));
         }
 
-        idx += idxs[i] * strides[i];
+        // strides are in number of bytes so we need to devide by
+        // the size of the scalar before using the index to access data
+        idx += idxs[i] * strides[i] / sizeof(T);
     }
 
     return inner_data[idx];
@@ -144,7 +147,7 @@ T OpenGymBoxContainer<T>::operator()(std::vector<uint32_t> idxs) const {
             // throw std::out_of_range(std::format("Dimension {} has a size of {} but got index {}.", i, space_shape[i], idxs[i]));
         }
 
-        idx += idxs[i] * strides[i];
+        idx += idxs[i] * strides[i] / sizeof(T);
     }
 
     return inner_data[idx];
@@ -154,7 +157,6 @@ template<typename T>
 OpenGymBoxContainer<T>::OpenGymBoxContainer(std::vector<uint32_t> shape) {
     space_dtype = get_dtype<T> ();
     space_shape = shape;
-    
     size = std::accumulate(shape.begin(), shape.end(), 1, std::multiplies<T>());
 
     uint32_t temp_size = size;
@@ -166,30 +168,5 @@ OpenGymBoxContainer<T>::OpenGymBoxContainer(std::vector<uint32_t> shape) {
 
     inner_data = new T[size] ();
 }
-
-// template<typename T>
-// void OpenGymBoxContainer<T>::add_value(T value) {
-//     inner_data.push_back(value);
-// }
-
-// template<typename T>
-// T OpenGymBoxContainer<T>::get_value(uint32_t idx) {
-//     if (idx < inner_data.size()) {
-//         return inner_data[idx];
-//     } else {
-//         // TODO: throw?
-//         return 0;
-//     }
-// }
-
-// template<typename T>
-// void OpenGymBoxContainer<T>::set_data(std::vector<T> data) {
-//     inner_data = data;
-// }
-
-// template<typename T>
-// std::vector<T> OpenGymBoxContainer<T>::get_data() {
-//     return inner_data;
-// }
 
 #endif
