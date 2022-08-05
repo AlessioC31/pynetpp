@@ -4,10 +4,10 @@
 #include <cassert>
 
 void test_container_default_ctor() {
-    OpenGymBoxContainer<float> c;
+    PynetppBoxContainer<float> c;
 
     assert(c.get_data() == nullptr);
-    assert(c.get_space_dtype() == OpenGymDType::FLOAT);
+    assert(c.get_space_dtype() == PynetppDType::FLOAT);
 
     assert(c.get_shape().size() == 0);
     assert(c.get_strides().size() == 0);
@@ -15,10 +15,10 @@ void test_container_default_ctor() {
 }
 
 void test_container_shape_ctor() {
-    OpenGymBoxContainer<float> c({3, 4, 5});
+    PynetppBoxContainer<float> c({3, 4, 5});
 
     assert(c.get_data() != nullptr);
-    assert(c.get_space_dtype() == OpenGymDType::FLOAT);
+    assert(c.get_space_dtype() == PynetppDType::FLOAT);
     
     assert(c.get_shape().size() == 3);
     assert(c.get_shape()[0] == 3);
@@ -35,7 +35,7 @@ void test_container_shape_ctor() {
 }
 
 void test_container_operator() {
-    OpenGymBoxContainer<float> c({3, 4, 5});
+    PynetppBoxContainer<float> c({3, 4, 5});
 
     c({0, 0, 0}) = 5;
 
@@ -43,11 +43,11 @@ void test_container_operator() {
 }
 
 void test_container_copy() {
-    OpenGymBoxContainer<float> c({3, 4, 5});
+    PynetppBoxContainer<float> c({3, 4, 5});
 
     assert(c({0, 0, 0}) == 0.0f);
 
-    OpenGymBoxContainer<float> d = c;
+    PynetppBoxContainer<float> d = c;
 
     assert(d({0, 0, 0}) == 0.0f);
 

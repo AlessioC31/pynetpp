@@ -5,17 +5,17 @@
 
 #ifndef gym_env_spaces
 #define gym_env_spaces
-class OpenGymSpace {
+class PynetppSpace {
     public:
-        OpenGymSpace() {};
+        PynetppSpace() {};
         virtual std::string get_space_type() = 0;
-        // virtual ~OpenGymSpace();
+        // virtual ~PynetppSpace();
 };
 
-class OpenGymDiscreteSpace : public OpenGymSpace {
+class PynetppDiscreteSpace : public PynetppSpace {
     public:
-        OpenGymDiscreteSpace();
-        OpenGymDiscreteSpace(uint32_t n);
+        PynetppDiscreteSpace();
+        PynetppDiscreteSpace(uint32_t n);
         uint32_t get_n();
         std::string get_space_type() override { return "discrete"; }
 
@@ -23,12 +23,12 @@ class OpenGymDiscreteSpace : public OpenGymSpace {
         uint32_t space_n;
 };
 
-class OpenGymBoxSpace : public OpenGymSpace {
+class PynetppBoxSpace : public PynetppSpace {
     public:
-        OpenGymBoxSpace();
-        OpenGymBoxSpace(float low, float high, std::vector<uint32_t> shape, OpenGymDType dtype);
-        OpenGymBoxSpace(std::vector<float> low, std::vector<float> high, std::vector<uint32_t> shape, OpenGymDType dtype);
-        // virtual ~OpenGymBoxSpace();
+        PynetppBoxSpace();
+        PynetppBoxSpace(float low, float high, std::vector<uint32_t> shape, PynetppDType dtype);
+        PynetppBoxSpace(std::vector<float> low, std::vector<float> high, std::vector<uint32_t> shape, PynetppDType dtype);
+        // virtual ~PynetppBoxSpace();
 
         float get_low();
         float get_high();
@@ -39,7 +39,7 @@ class OpenGymBoxSpace : public OpenGymSpace {
         float space_low;
         float space_high;
         std::vector<uint32_t> space_shape;
-        OpenGymDType space_dtype;
+        PynetppDType space_dtype;
         std::vector<float> space_low_vect;
         std::vector<float> space_high_vect;
 };

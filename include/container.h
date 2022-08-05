@@ -10,17 +10,17 @@
 #ifndef gym_env_container
 #define gym_env_container
 
-class OpenGymContainer {
+class PynetppContainer {
     public:
-        OpenGymContainer() {};
-        // virtual ~OpenGymContainer();
+        PynetppContainer() {};
+        // virtual ~PynetppContainer();
 };
 
-class OpenGymDiscreteContainer : public OpenGymContainer{
+class PynetppDiscreteContainer : public PynetppContainer{
     public:
-        OpenGymDiscreteContainer();
-        OpenGymDiscreteContainer(uint32_t n);
-        // virtual ~OpenGymDiscreteContainer();
+        PynetppDiscreteContainer();
+        PynetppDiscreteContainer(uint32_t n);
+        // virtual ~PynetppDiscreteContainer();
 
         void set_value(uint32_t value);
         uint32_t get_value();
@@ -31,13 +31,13 @@ class OpenGymDiscreteContainer : public OpenGymContainer{
 };
 
 template<typename T = float>
-class OpenGymBoxContainer : public OpenGymContainer{
+class PynetppBoxContainer : public PynetppContainer{
     public:
-        OpenGymBoxContainer();
-        OpenGymBoxContainer(std::vector<uint32_t> shape);
-        OpenGymBoxContainer(const OpenGymBoxContainer& that);
-        OpenGymBoxContainer(OpenGymBoxContainer&& that) noexcept;
-        ~OpenGymBoxContainer() { delete[] inner_data; }
+        PynetppBoxContainer();
+        PynetppBoxContainer(std::vector<uint32_t> shape);
+        PynetppBoxContainer(const PynetppBoxContainer& that);
+        PynetppBoxContainer(PynetppBoxContainer&& that) noexcept;
+        ~PynetppBoxContainer() { delete[] inner_data; }
 
         // void add_value(T value);
         // T get_value(uint32_t idx);
@@ -49,9 +49,9 @@ class OpenGymBoxContainer : public OpenGymContainer{
         inline uint32_t get_size() { return size; }
         inline std::vector<uint32_t> get_strides() { return strides; }
         inline std::vector<uint32_t> get_shape() { return space_shape; }
-        inline OpenGymDType get_space_dtype() { return space_dtype; }
+        inline PynetppDType get_space_dtype() { return space_dtype; }
 
-        friend void swap(OpenGymBoxContainer& first, OpenGymBoxContainer& second) noexcept {
+        friend void swap(PynetppBoxContainer& first, PynetppBoxContainer& second) noexcept {
             using std::swap;
 
             swap(first.space_shape, second.space_shape);
@@ -61,7 +61,7 @@ class OpenGymBoxContainer : public OpenGymContainer{
             swap(first.space_dtype, second.space_dtype);
         }
 
-        OpenGymBoxContainer& operator=(OpenGymBoxContainer other);
+        PynetppBoxContainer& operator=(PynetppBoxContainer other);
         T& operator()(std::vector<uint32_t> idxs);
         T operator()(std::vector<uint32_t> idxs) const;
 
@@ -70,17 +70,17 @@ class OpenGymBoxContainer : public OpenGymContainer{
         T* inner_data;
         std::vector<uint32_t> strides;
         uint32_t size;
-        OpenGymDType space_dtype;
+        PynetppDType space_dtype;
 };
 
 template<typename T>
-OpenGymBoxContainer<T>::OpenGymBoxContainer() {
+PynetppBoxContainer<T>::PynetppBoxContainer() {
     space_dtype = get_dtype<T> ();
     inner_data = nullptr;
 }
 
 template<typename T>
-OpenGymBoxContainer<T>::OpenGymBoxContainer(const OpenGymBoxContainer& that) {
+PynetppBoxContainer<T>::PynetppBoxContainer(const PynetppBoxContainer& that) {
     //TODO: what if that is an empy container (shape.size() == 0)
     space_shape = that.space_shape;
     strides = that.strides;
@@ -92,12 +92,12 @@ OpenGymBoxContainer<T>::OpenGymBoxContainer(const OpenGymBoxContainer& that) {
 }
 
 template<typename T>
-OpenGymBoxContainer<T>::OpenGymBoxContainer(OpenGymBoxContainer&& that) noexcept : OpenGymBoxContainer() {
+PynetppBoxContainer<T>::PynetppBoxContainer(PynetppBoxContainer&& that) noexcept : PynetppBoxContainer() {
     swap(*this, that);
 }
 
 template<typename T>
-OpenGymBoxContainer<T>& OpenGymBoxContainer<T>::operator=(OpenGymBoxContainer other) {
+PynetppBoxContainer<T>& PynetppBoxContainer<T>::operator=(PynetppBoxContainer other) {
     swap(*this, other);
 
     return *this;
@@ -106,7 +106,7 @@ OpenGymBoxContainer<T>& OpenGymBoxContainer<T>::operator=(OpenGymBoxContainer ot
 //TODO: fix throw message with formatting
 //TODO: maybe change vector to something else
 template<typename T>
-T& OpenGymBoxContainer<T>::operator()(std::vector<uint32_t> idxs) {
+T& PynetppBoxContainer<T>::operator()(std::vector<uint32_t> idxs) {
 
     if (idxs.size() != space_shape.size()) {
         throw std::invalid_argument("Invalid dimensions numbers.");
@@ -132,7 +132,7 @@ T& OpenGymBoxContainer<T>::operator()(std::vector<uint32_t> idxs) {
         
         
 template<typename T>
-T OpenGymBoxContainer<T>::operator()(std::vector<uint32_t> idxs) const {
+T PynetppBoxContainer<T>::operator()(std::vector<uint32_t> idxs) const {
     if (idxs.size() != space_shape.size()) {
         throw std::invalid_argument("Invalid dimensions numbers.");
         //  throw std::invalid_argument("Expected " + space_shape.size() + " dimensions, got " + idxs.size() + ".", space_shape.size(), idxs.size());
@@ -154,7 +154,7 @@ T OpenGymBoxContainer<T>::operator()(std::vector<uint32_t> idxs) const {
 }
 
 template<typename T>
-OpenGymBoxContainer<T>::OpenGymBoxContainer(std::vector<uint32_t> shape) {
+PynetppBoxContainer<T>::PynetppBoxContainer(std::vector<uint32_t> shape) {
     space_dtype = get_dtype<T> ();
     space_shape = shape;
     size = std::accumulate(shape.begin(), shape.end(), 1, std::multiplies<T>());

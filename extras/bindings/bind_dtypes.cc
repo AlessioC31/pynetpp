@@ -2,19 +2,19 @@
 #include <dtypes.h>
 
 void bind_dtypes(pybind11::module_ &m) {
-    pybind11::enum_<OpenGymDType>(
+    pybind11::enum_<PynetppDType>(
         m,
-        "OpenGymDType"
+        "PynetppDType"
     )
-        .value("INT8", OpenGymDType::INT8)
-        .value("INT16", OpenGymDType::INT16)
-        .value("INT32", OpenGymDType::INT32)
-        .value("INT64", OpenGymDType::INT64)
-        .value("UINT8", OpenGymDType::UINT8)
-        .value("UINT16", OpenGymDType::UINT16)
-        .value("UINT32", OpenGymDType::UINT32)
-        .value("UINT64", OpenGymDType::UINT64)
-        .value("FLOAT", OpenGymDType::FLOAT)
-        .value("DOUBLE", OpenGymDType::DOUBLE)
+        .value("INT8", PynetppDType::INT8)
+        .value("INT16", PynetppDType::INT16)
+        .value("INT32", PynetppDType::INT32)
+        .value("INT64", PynetppDType::INT64)
+        .value("UINT8", PynetppDType::UINT8)
+        .value("UINT16", PynetppDType::UINT16)
+        .value("UINT32", PynetppDType::UINT32)
+        .value("UINT64", PynetppDType::UINT64)
+        .value("FLOAT", PynetppDType::FLOAT)
+        .value("DOUBLE", PynetppDType::DOUBLE)
         .export_values();
 }

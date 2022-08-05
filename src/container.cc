@@ -2,13 +2,13 @@
 #include "dtypes.h"
 #include <vector>
 
-OpenGymDiscreteContainer::OpenGymDiscreteContainer(): space_n(0) {}
-OpenGymDiscreteContainer::OpenGymDiscreteContainer(uint32_t n): space_n(n) {}
+PynetppDiscreteContainer::PynetppDiscreteContainer(): space_n(0) {}
+PynetppDiscreteContainer::PynetppDiscreteContainer(uint32_t n): space_n(n) {}
 
-void OpenGymDiscreteContainer::set_value(uint32_t value) {
+void PynetppDiscreteContainer::set_value(uint32_t value) {
     inner_value = value;
 }
 
-uint32_t OpenGymDiscreteContainer::get_value() {
+uint32_t PynetppDiscreteContainer::get_value() {
     return inner_value;
 }

@@ -44,52 +44,53 @@ class MinimalEnv : public cNullEnvir {
         }
 };
 
-OpenGymSpace& OpenGymEnv::get_observation_space() {
-    OpenGymBoxSpace* space = new OpenGymBoxSpace(0, 10000, std::vector<uint32_t> {3}, FLOAT);
+PynetppSpace& PynetppEnv::get_observation_space() {
+    PynetppBoxSpace* space = new PynetppBoxSpace(0, 10000, std::vector<uint32_t> {3}, FLOAT);
 
     return *space;
 }
 
-OpenGymSpace& OpenGymEnv::get_action_space() {
-    OpenGymDiscreteSpace* space = new OpenGymDiscreteSpace(4);
+PynetppSpace& PynetppEnv::get_action_space() {
+    PynetppDiscreteSpace* space = new PynetppDiscreteSpace(4);
 
     return *space;
 }
 
-OpenGymContainer& OpenGymEnv::get_observation() {
-    OpenGymBoxContainer<float>& to_ret = *new OpenGymBoxContainer<float>({4});
+PynetppContainer& PynetppEnv::get_observation() {
+    PynetppBoxContainer<float>* to_ret = new PynetppBoxContainer<float>({4,});
 
     for (unsigned i = 0; i < 4; i ++) {
         std::string module_name = "Loadbalancernet.server[" + std::to_string(i) + "]";
         loadbalancing::Server* s = (loadbalancing::Server*) _omnet_sim->getModuleByPath(module_name.c_str());
-        to_ret({i}) = s->get_load();
+
+        (*to_ret)({i}) = s->get_load();
     }
 
-    return to_ret;
+    return *to_ret;
 }
 
-void OpenGymEnv::execute_action(OpenGymContainer& action) {
-    OpenGymDiscreteContainer& discrete_action = (OpenGymDiscreteContainer&) action;
+void PynetppEnv::execute_action(PynetppContainer& action) {
+    PynetppDiscreteContainer& discrete_action = (PynetppDiscreteContainer&) action;
 
     loadbalancing::Loadbalancer* l = (loadbalancing::Loadbalancer*) _omnet_sim->getModuleByPath("Loadbalancernet.loadbalancer");
     l->set_server_idx(discrete_action.get_value());
 }
 
-float OpenGymEnv::get_reward() {
+float PynetppEnv::get_reward() {
     return 0;
 }
 
-OpenGymInterface::OpenGymInterface() {
+PynetppInterface::PynetppInterface() {
     _dummy = new cStaticFlag();
     cEnvir* omnetpp_env = new MinimalEnv(0, NULL, new EmptyConfig());
     cSimulation* sim = new cSimulation("simulation", omnetpp_env);
 
-    OpenGymEnv* gym_env = new OpenGymEnv(sim);
+    PynetppEnv* gym_env = new PynetppEnv(sim);
     _env = gym_env;
     _sim = sim;
 }
 
-void OpenGymInterface::startup() {
+void PynetppInterface::startup() {
     CodeFragments::executeAll(CodeFragments::STARTUP);
     SimTime::setScaleExp(-12);
     cSimulation::setActiveSimulation(_sim);
@@ -109,11 +110,10 @@ void OpenGymInterface::startup() {
     _sim->callInitialize();
 }
 
-void OpenGymInterface::execute_step() {
+void PynetppInterface::execute_step() {
     // try {
     for (int i = 0; i < 5; i ++) {
         cEvent* event =  _sim->takeNextEvent();
-        std::cout<<_sim->getSimTime()<<endl;
 
         if (event) {
             _sim->executeEvent(event);
@@ -123,13 +123,12 @@ void OpenGymInterface::execute_step() {
         }
     }
     // } catch (cTerminationException& e) {
-    //     std::cout<<"FINEMMU-------------"<<endl;
     //     _env->set_game_over(true);
     // }
 
 }
 
-void OpenGymInterface::reset() {
+void PynetppInterface::reset() {
     _sim->callFinish();
     _sim->deleteNetwork();
     _sim->setActiveSimulation(nullptr);
@@ -138,7 +137,7 @@ void OpenGymInterface::reset() {
     cEnvir* omnetpp_env = new MinimalEnv(0, NULL, new EmptyConfig());
     cSimulation* sim = new cSimulation("simulation", omnetpp_env);
 
-    OpenGymEnv* gym_env = new OpenGymEnv(sim);
+    PynetppEnv* gym_env = new PynetppEnv(sim);
     _env = gym_env;
     _sim = sim;
 
@@ -151,7 +150,7 @@ void OpenGymInterface::reset() {
     _sim->callInitialize();
 }
 
-void OpenGymInterface::stop() {
+void PynetppInterface::stop() {
     _sim->callFinish();
     _sim->deleteNetwork();
     _sim->setActiveSimulation(nullptr);
@@ -161,7 +160,7 @@ void OpenGymInterface::stop() {
 }
 
 // int main() {
-//     OpenGymInterface* interface = new OpenGymInterface();
+//     PynetppInterface* interface = new PynetppInterface();
 //     interface->startup();
 //     for (int i = 0; i < 5; i ++)
 //         interface->execute_step();
@@ -170,14 +169,14 @@ void OpenGymInterface::stop() {
 //     // interface->stop();
 //     // interface->execute_step();
 
-//     OpenGymDiscreteContainer* act_container = new OpenGymDiscreteContainer(4);
+//     PynetppDiscreteContainer* act_container = new PynetppDiscreteContainer(4);
 //     act_container->set_value(1);
 
 //     interface->get_env().execute_action(*act_container);
 //     for (int i = 0; i < 5; i ++)
 //         interface->execute_step();
 
-//     OpenGymBoxContainer<float>& obs = (OpenGymBoxContainer<float>&) interface->get_env().get_observation();
+//     PynetppBoxContainer<float>& obs = (PynetppBoxContainer<float>&) interface->get_env().get_observation();
 //     std::vector<float> v = obs.get_data();
 
 //     for (float el : v) {

@@ -5,30 +5,30 @@
 #include <dtypes.h>
 
 void bind_spaces(pybind11::module_ &m) {
-    pybind11::class_<OpenGymSpace>(
+    pybind11::class_<PynetppSpace>(
         m,
-        "OpenGymSpace"
+        "PynetppSpace"
     )
-        .def("get_space_type", &OpenGymSpace::get_space_type);
+        .def("get_space_type", &PynetppSpace::get_space_type);
 
-    pybind11::class_<OpenGymDiscreteSpace, OpenGymSpace>(
+    pybind11::class_<PynetppDiscreteSpace, PynetppSpace>(
         m,
-        "OpenGymDiscreteSpace"
+        "PynetppDiscreteSpace"
     )
         .def(pybind11::init<>())
         .def(pybind11::init<const uint32_t>())
-        .def("get_space_type", &OpenGymDiscreteSpace::get_space_type)
-        .def("get_n", &OpenGymDiscreteSpace::get_n);
+        .def("get_space_type", &PynetppDiscreteSpace::get_space_type)
+        .def("get_n", &PynetppDiscreteSpace::get_n);
 
-    pybind11::class_<OpenGymBoxSpace, OpenGymSpace>(
+    pybind11::class_<PynetppBoxSpace, PynetppSpace>(
         m,
-        "OpenGymBoxSpace"
+        "PynetppBoxSpace"
     )
         .def(pybind11::init<>())
-        .def(pybind11::init<float, float, std::vector<uint32_t>, OpenGymDType>())
-        .def(pybind11::init<std::vector<float>, std::vector<float>, std::vector<uint32_t>, OpenGymDType>())
-        .def("get_low", &OpenGymBoxSpace::get_low)
-        .def("get_high", &OpenGymBoxSpace::get_high)
-        .def("get_space_type", &OpenGymBoxSpace::get_space_type)
-        .def("get_shape", &OpenGymBoxSpace::get_shape);
+        .def(pybind11::init<float, float, std::vector<uint32_t>, PynetppDType>())
+        .def(pybind11::init<std::vector<float>, std::vector<float>, std::vector<uint32_t>, PynetppDType>())
+        .def("get_low", &PynetppBoxSpace::get_low)
+        .def("get_high", &PynetppBoxSpace::get_high)
+        .def("get_space_type", &PynetppBoxSpace::get_space_type)
+        .def("get_shape", &PynetppBoxSpace::get_shape);
 }
