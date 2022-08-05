@@ -57,7 +57,7 @@ OpenGymSpace& OpenGymEnv::get_action_space() {
 }
 
 OpenGymContainer& OpenGymEnv::get_observation() {
-    OpenGymBoxContainer<float>& to_ret = *new OpenGymBoxContainer<float>(std::vector<uint32_t> {3});
+    OpenGymBoxContainer<float>& to_ret = *new OpenGymBoxContainer<float>({4});
 
     for (unsigned i = 0; i < 4; i ++) {
         std::string module_name = "Loadbalancernet.server[" + std::to_string(i) + "]";
