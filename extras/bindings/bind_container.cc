@@ -18,66 +18,57 @@ void bind_container(pybind11::module_ &m) {
         .def("set_value", &OpenGymDiscreteContainer::set_value)
         .def("get_value", &OpenGymDiscreteContainer::get_value);
 
-    // pybind11::class_<OpenGymBoxContainer<float>, OpenGymContainer>(
-    //     m,
-    //     "OpenGymBoxContainer",
-    //     pybind11::buffer_protocol()
-    // )
-    //     .def(pybind11::init<>())
-    //     .def(pybind11::init<std::vector<uint32_t>>())
-    //     .def("add_value", &OpenGymBoxContainer<float>::add_value)
-    //     .def("get_value", &OpenGymBoxContainer<float>::get_value)
-    //     .def("set_data", &OpenGymBoxContainer<float>::set_data)
-    //     .def("get_data", &OpenGymBoxContainer<float>::get_data)
-    //     .def("get_shape", &OpenGymBoxContainer<float>::get_shape)
-    //     .def_buffer([](OpenGymBoxContainer<float>& c) {
-    //         return pybind11::buffer_info(
-    //             c.get_data().data(),
-    //             sizeof(float),
-    //             pybind11::format_descriptor<float>::format(),
-    //             1,
-    //             {c.get_data().size()},
-    //             {sizeof(float)}
-    //         );
-    //     });
-
-    pybind11::class_<OpenGymBoxContainer<uint64_t>, OpenGymContainer>(
+    pybind11::class_<OpenGymBoxContainer<float>, OpenGymContainer>(
         m,
-        "OpenGymBoxContainerUI32",
+        "OpenGymBoxContainerF",
         pybind11::buffer_protocol()
     )
-        .def(pybind11::init<>())
-        .def(pybind11::init<std::vector<uint32_t>>())
-        // .def("add_value", &OpenGymBoxContainer<uint64_t>::add_value)
-        // .def("get_value", &OpenGymBoxContainer<uint64_t>::get_value)
-        // .def("set_data", &OpenGymBoxContainer<uint64_t>::set_data)
-        // .def("get_data", &OpenGymBoxContainer<uint64_t>::get_data)
-        .def("get_shape", &OpenGymBoxContainer<uint64_t>::get_shape)
-        // .def("__setitem__", 
-        //     [](OpenGymBoxContainer<uint64_t>& c, std::vector<pybind11::ssize_t> i, uint64_t v) {
-        //         if (i.size() != c.get_shape().size()) {
-        //             throw pybind11::index_error();
-        //         }
+        .def("from_nparray", [](pybind11::array_t<float>& array) {
+            pybind11::buffer_info info = array.request();
 
-        //         for (auto idx: i) {
-        //             if (idx)
-        //         }
-        //     }    
-        // )
-        // .def("from_nparray", []())
-        .def_buffer([](OpenGymBoxContainer<uint64_t>& c) {
-            std::cout<<c.get_data()<<std::endl;
+            std::vector<uint32_t> shape(info.shape.begin(), info.shape.end());
 
+            OpenGymBoxContainer<float> c(shape);     
+
+            std::memcpy(c.get_data(), info.ptr, info.itemsize * info.size);
+
+            return c;
+        })
+        .def_buffer([](OpenGymBoxContainer<float>& c) {
             return pybind11::buffer_info(
                 c.get_data(),
-                sizeof(uint64_t),
-                pybind11::format_descriptor<uint64_t>::format(),
+                sizeof(float),
+                pybind11::format_descriptor<float>::format(),
                 c.get_shape().size(),
                 c.get_shape(),
                 c.get_strides()
             );
         });
-        // .def("get_low", &OpenGymBoxSpace::get_low)
-        // .def("get_high", &OpenGymBoxSpace::get_high)
-        // .def("get_shape", &OpenGymBoxSpace::get_shape);
+
+    pybind11::class_<OpenGymBoxContainer<uint32_t>, OpenGymContainer>(
+        m,
+        "OpenGymBoxContainerUI32",
+        pybind11::buffer_protocol()
+    )
+        .def("from_nparray", [](pybind11::array_t<uint32_t>& array) {
+            pybind11::buffer_info info = array.request();
+
+            std::vector<uint32_t> shape(info.shape.begin(), info.shape.end());
+
+            OpenGymBoxContainer<uint32_t> c(shape);     
+
+            std::memcpy(c.get_data(), info.ptr, info.itemsize * info.size);
+
+            return c;
+        })
+        .def_buffer([](OpenGymBoxContainer<uint32_t>& c) {
+            return pybind11::buffer_info(
+                c.get_data(),
+                sizeof(uint32_t),
+                pybind11::format_descriptor<uint32_t>::format(),
+                c.get_shape().size(),
+                c.get_shape(),
+                c.get_strides()
+            );
+        });
 }
