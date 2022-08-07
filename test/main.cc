@@ -1,7 +1,8 @@
 #include <container.h>
 #include <dtypes.h>
-#include <iostream>
+
 #include <cassert>
+#include <iostream>
 
 void test_container_default_ctor() {
     PynetppBoxContainer<float> c;
@@ -19,7 +20,7 @@ void test_container_shape_ctor() {
 
     assert(c.get_data() != nullptr);
     assert(c.get_space_dtype() == PynetppDType::FLOAT);
-    
+
     assert(c.get_shape().size() == 3);
     assert(c.get_shape()[0] == 3);
     assert(c.get_shape()[1] == 4);
@@ -45,19 +46,25 @@ void test_container_operator() {
 void test_container_copy() {
     PynetppBoxContainer<float> c({3, 4, 5});
 
-    assert(c({0, 0, 0}) == 0.0f);
+    assert(c({1, 1, 1}) == 0.0f);
 
     PynetppBoxContainer<float> d = c;
 
-    assert(d({0, 0, 0}) == 0.0f);
+    assert(d({1, 1, 1}) == 0.0f);
 
-    d({0, 0, 0}) = 5;
+    d({1, 1, 1}) = 5;
 
-    assert(d({0, 0, 0}) == 5);
+    assert(d({1, 1, 1}) == 5);
+    assert(c({1, 1, 1}) == 0.0f);
+}
 
-    std::cout<<c({0, 0, 0})<<std::endl;
-    assert(c({0, 0, 0}) == 0.0f);
-    
+void test_container_type() {
+    PynetppBoxContainer<float> c;
+
+    assert(c.get_type() == "box_float");
+
+    PynetppBoxContainer<uint32_t> d;
+    assert(d.get_type() == "box_uint32_t");
 }
 
 int main() {
@@ -65,5 +72,7 @@ int main() {
     test_container_shape_ctor();
     test_container_operator();
     test_container_copy();
+    test_container_type();
+
     return 0;
 }

@@ -1,4 +1,5 @@
 #include <cstdint>
+#include <string>
 
 #ifndef gym_env_dtypes
 #define gym_env_dtypes
@@ -15,7 +16,7 @@ enum PynetppDType {
     DOUBLE
 };
 
-template<typename T>
+template <typename T>
 constexpr PynetppDType get_dtype() {
     // TODO: should throw?
     return FLOAT;
@@ -30,7 +31,7 @@ inline std::string get_dtype_string(PynetppDType dtype) {
         case INT32:
             return "int32_t";
         case INT64:
-            return "int64_t";    
+            return "int64_t";
         case UINT8:
             return "uint8_t";
         case UINT16:
@@ -38,24 +39,54 @@ inline std::string get_dtype_string(PynetppDType dtype) {
         case UINT32:
             return "uint32_t";
         case UINT64:
-            return "uint64_t";   
+            return "uint64_t";
         case FLOAT:
             return "float";
         case DOUBLE:
-            return "double";   
+            return "double";
         default:
-            return "float"; // needed to make compiler happy
+            return "float";  // needed to make compiler happy
     }
 }
 
-template <> constexpr PynetppDType get_dtype<int8_t> () { return INT8; }
-template <> constexpr PynetppDType get_dtype<int16_t> () { return INT16; }
-template <> constexpr PynetppDType get_dtype<int32_t> ()  { return INT32; }
-template <> constexpr PynetppDType get_dtype<int64_t> () { return INT64; }
-template <> constexpr PynetppDType get_dtype<uint8_t> () { return UINT8; }
-template <> constexpr PynetppDType get_dtype<uint16_t> () { return UINT16; }
-template <> constexpr PynetppDType get_dtype<uint32_t> () { return UINT32; }
-template <> constexpr PynetppDType get_dtype<uint64_t> () { return UINT64; }
-template <> constexpr PynetppDType get_dtype<float> () { return FLOAT; }
-template <> constexpr PynetppDType get_dtype<double> () { return DOUBLE; }
+template <>
+constexpr PynetppDType get_dtype<int8_t>() {
+    return INT8;
+}
+template <>
+constexpr PynetppDType get_dtype<int16_t>() {
+    return INT16;
+}
+template <>
+constexpr PynetppDType get_dtype<int32_t>() {
+    return INT32;
+}
+template <>
+constexpr PynetppDType get_dtype<int64_t>() {
+    return INT64;
+}
+template <>
+constexpr PynetppDType get_dtype<uint8_t>() {
+    return UINT8;
+}
+template <>
+constexpr PynetppDType get_dtype<uint16_t>() {
+    return UINT16;
+}
+template <>
+constexpr PynetppDType get_dtype<uint32_t>() {
+    return UINT32;
+}
+template <>
+constexpr PynetppDType get_dtype<uint64_t>() {
+    return UINT64;
+}
+template <>
+constexpr PynetppDType get_dtype<float>() {
+    return FLOAT;
+}
+template <>
+constexpr PynetppDType get_dtype<double>() {
+    return DOUBLE;
+}
 #endif

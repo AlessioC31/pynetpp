@@ -5,12 +5,14 @@
 #ifndef pynetpp_common
 #define pynetpp_common
 
-template<typename T>
+template <typename T>
 struct TypeTraits;
 
-#define REGISTER_TYPE(X) \
-    template <> struct TypeTraits<X> \
-    { static const std::string name; }; \
+#define REGISTER_TYPE(X)               \
+    template <>                        \
+    struct TypeTraits<X> {             \
+        static const std::string name; \
+    };                                 \
     inline const std::string TypeTraits<X>::name = #X
 
 REGISTER_TYPE(int8_t);

@@ -3,25 +3,25 @@
 // it under the terms of the GNU Lesser General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public License
 // along with this program.  If not, see http://www.gnu.org/licenses/.
-// 
+//
 
 #include "server.h"
+
 #include "JobMessage_m.h"
 
 namespace loadbalancing {
 
 Define_Module(Server);
 
-void Server::initialize()
-{
+void Server::initialize() {
     load = 0;
     current_job = nullptr;
 }
@@ -33,8 +33,7 @@ void Server::update_load() {
     recordScalar(metric_name, load);
 }
 
-void Server::handleMessage(cMessage *msg)
-{
+void Server::handleMessage(cMessage* msg) {
     if (msg->isSelfMessage()) {
         // Self message means it's an execution_finished msg
 
@@ -73,7 +72,6 @@ void Server::handleMessage(cMessage *msg)
         job_queue.push(new_job);
     }
     update_load();
-
 }
 
-} //namespace
+}  // namespace loadbalancing
