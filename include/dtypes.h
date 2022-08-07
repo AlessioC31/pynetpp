@@ -43,6 +43,8 @@ inline std::string get_dtype_string(PynetppDType dtype) {
             return "float";
         case DOUBLE:
             return "double";   
+        default:
+            return "float"; // needed to make compiler happy
     }
 }
 
