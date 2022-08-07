@@ -3,6 +3,36 @@
 #include <pybind11/numpy.h>
 #include <container.h>
 
+template<typename T = float>
+void bind_box_container(pybind11::module_ &m, const char* class_name) {
+    pybind11::class_<PynetppBoxContainer<T>, PynetppContainer>(
+            m,
+            class_name,
+            pybind11::buffer_protocol()
+        )
+            .def("from_nparray", [](pybind11::array_t<T>& array) {
+                pybind11::buffer_info info = array.request();
+
+                std::vector<uint32_t> shape(info.shape.begin(), info.shape.end());
+
+                PynetppBoxContainer<T> c(shape);     
+
+                std::memcpy(c.get_data(), info.ptr, info.itemsize * info.size);
+
+                return c;
+            })
+            .def_buffer([](PynetppBoxContainer<T>& c) {
+                return pybind11::buffer_info(
+                    c.get_data(),
+                    sizeof(T),
+                    pybind11::format_descriptor<T>::format(),
+                    c.get_shape().size(),
+                    c.get_shape(),
+                    c.get_strides()
+                );
+            });
+}
+
 void bind_container(pybind11::module_ &m) {
     pybind11::class_<PynetppContainer>(
         m,
@@ -18,57 +48,14 @@ void bind_container(pybind11::module_ &m) {
         .def("set_value", &PynetppDiscreteContainer::set_value)
         .def("get_value", &PynetppDiscreteContainer::get_value);
 
-    pybind11::class_<PynetppBoxContainer<float>, PynetppContainer>(
-        m,
-        "PynetppBoxContainerF",
-        pybind11::buffer_protocol()
-    )
-        .def("from_nparray", [](pybind11::array_t<float>& array) {
-            pybind11::buffer_info info = array.request();
-
-            std::vector<uint32_t> shape(info.shape.begin(), info.shape.end());
-
-            PynetppBoxContainer<float> c(shape);     
-
-            std::memcpy(c.get_data(), info.ptr, info.itemsize * info.size);
-
-            return c;
-        })
-        .def_buffer([](PynetppBoxContainer<float>& c) {
-            return pybind11::buffer_info(
-                c.get_data(),
-                sizeof(float),
-                pybind11::format_descriptor<float>::format(),
-                c.get_shape().size(),
-                c.get_shape(),
-                c.get_strides()
-            );
-        });
-
-    pybind11::class_<PynetppBoxContainer<uint32_t>, PynetppContainer>(
-        m,
-        "PynetppBoxContainerUI32",
-        pybind11::buffer_protocol()
-    )
-        .def("from_nparray", [](pybind11::array_t<uint32_t>& array) {
-            pybind11::buffer_info info = array.request();
-
-            std::vector<uint32_t> shape(info.shape.begin(), info.shape.end());
-
-            PynetppBoxContainer<uint32_t> c(shape);     
-
-            std::memcpy(c.get_data(), info.ptr, info.itemsize * info.size);
-
-            return c;
-        })
-        .def_buffer([](PynetppBoxContainer<uint32_t>& c) {
-            return pybind11::buffer_info(
-                c.get_data(),
-                sizeof(uint32_t),
-                pybind11::format_descriptor<uint32_t>::format(),
-                c.get_shape().size(),
-                c.get_shape(),
-                c.get_strides()
-            );
-        });
+    bind_box_container<int8_t>(m, "PynetppBoxContainerI8");
+    bind_box_container<int16_t>(m, "PynetppBoxContainerI16");
+    bind_box_container<int32_t>(m, "PynetppBoxContainerI32");
+    bind_box_container<int64_t>(m, "PynetppBoxContainerI64");
+    bind_box_container<uint8_t>(m, "PynetppBoxContainerUI8");
+    bind_box_container<uint16_t>(m, "PynetppBoxContainerUI16");
+    bind_box_container<uint32_t>(m, "PynetppBoxContainerUI32");
+    bind_box_container<uint64_t>(m, "PynetppBoxContainerUI64");
+    bind_box_container<float>(m, "PynetppBoxContainerF");
+    bind_box_container<double>(m, "PynettpBoxContainerD");
 }
