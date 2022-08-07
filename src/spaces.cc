@@ -3,8 +3,8 @@
 #include <cstdint>
 #include <vector>
 
-PynetppDiscreteSpace::PynetppDiscreteSpace() {};
-PynetppDiscreteSpace::PynetppDiscreteSpace(uint32_t n) : space_n(n) { };
+PynetppDiscreteSpace::PynetppDiscreteSpace() : space_n(0) {};
+PynetppDiscreteSpace::PynetppDiscreteSpace(uint32_t n) : space_n(n) {};
 
 uint32_t PynetppDiscreteSpace::get_n() {
     return space_n;
