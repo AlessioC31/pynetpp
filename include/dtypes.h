@@ -21,6 +21,31 @@ constexpr PynetppDType get_dtype() {
     return FLOAT;
 }
 
+inline std::string get_dtype_string(PynetppDType dtype) {
+    switch (dtype) {
+        case INT8:
+            return "int8_t";
+        case INT16:
+            return "int16_t";
+        case INT32:
+            return "int32_t";
+        case INT64:
+            return "int64_t";    
+        case UINT8:
+            return "uint8_t";
+        case UINT16:
+            return "uint16_t";
+        case UINT32:
+            return "uint32_t";
+        case UINT64:
+            return "uint64_t";   
+        case FLOAT:
+            return "float";
+        case DOUBLE:
+            return "double";   
+    }
+}
+
 template <> constexpr PynetppDType get_dtype<int8_t> () { return INT8; }
 template <> constexpr PynetppDType get_dtype<int16_t> () { return INT16; }
 template <> constexpr PynetppDType get_dtype<int32_t> ()  { return INT32; }

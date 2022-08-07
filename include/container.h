@@ -6,6 +6,7 @@
 #include <stdexcept>
 #include <iostream>
 #include "dtypes.h"
+#include "common.h"
 
 #ifndef gym_env_container
 #define gym_env_container
@@ -13,6 +14,7 @@
 class PynetppContainer {
     public:
         PynetppContainer() {};
+        virtual std::string get_type() const = 0;
         // virtual ~PynetppContainer();
 };
 
@@ -23,8 +25,9 @@ class PynetppDiscreteContainer : public PynetppContainer{
         // virtual ~PynetppDiscreteContainer();
 
         void set_value(uint32_t value);
-        uint32_t get_value();
-
+        uint32_t get_value() const;
+        inline std::string get_type() const override { return "discrete"; }
+        
     private:    
         uint32_t space_n;
         uint32_t inner_value;
@@ -50,6 +53,7 @@ class PynetppBoxContainer : public PynetppContainer{
         inline std::vector<uint32_t> get_strides() { return strides; }
         inline std::vector<uint32_t> get_shape() { return space_shape; }
         inline PynetppDType get_space_dtype() { return space_dtype; }
+        inline std::string get_type() const override { return "box_" + TypeTraits<T>::name; }
 
         friend void swap(PynetppBoxContainer& first, PynetppBoxContainer& second) noexcept {
             using std::swap;
@@ -122,7 +126,7 @@ T& PynetppBoxContainer<T>::operator()(std::vector<uint32_t> idxs) {
             // throw std::out_of_range(std::format("Dimension {} has a size of {} but got index {}.", i, space_shape[i], idxs[i]));
         }
 
-        // strides are in number of bytes so we need to devide by
+        // strides are in number of bytes so we need to divide by
         // the size of the scalar before using the index to access data
         idx += idxs[i] * strides[i] / sizeof(T);
     }

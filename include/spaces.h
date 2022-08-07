@@ -8,7 +8,7 @@
 class PynetppSpace {
     public:
         PynetppSpace() {};
-        virtual std::string get_space_type() = 0;
+        inline virtual std::string get_space_type() const = 0;
         // virtual ~PynetppSpace();
 };
 
@@ -17,7 +17,7 @@ class PynetppDiscreteSpace : public PynetppSpace {
         PynetppDiscreteSpace();
         PynetppDiscreteSpace(uint32_t n);
         uint32_t get_n();
-        std::string get_space_type() override { return "discrete"; }
+        inline std::string get_space_type() const override { return "discrete"; }
 
     private:
         uint32_t space_n;
@@ -33,7 +33,7 @@ class PynetppBoxSpace : public PynetppSpace {
         float get_low();
         float get_high();
         std::vector<uint32_t> get_shape();
-        std::string get_space_type() override { return "box"; }
+        inline std::string get_space_type() const override { return "box_" + get_dtype_string(space_dtype); }
 
     private:
         float space_low;

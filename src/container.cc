@@ -9,6 +9,6 @@ void PynetppDiscreteContainer::set_value(uint32_t value) {
     inner_value = value;
 }
 
-uint32_t PynetppDiscreteContainer::get_value() {
+uint32_t PynetppDiscreteContainer::get_value() const {
     return inner_value;
 }
