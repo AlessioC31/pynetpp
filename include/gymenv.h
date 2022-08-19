@@ -16,8 +16,8 @@ class PynetppEnv {
         : _omnet_sim(omnet_sim), game_over(false){};
     // virtual ~PynetppEnv();
 
-    PynetppSpace &get_observation_space();
-    PynetppSpace &get_action_space();
+    PynetppSpace *get_observation_space();
+    PynetppSpace *get_action_space();
     PynetppContainer &get_observation();
     void execute_action(PynetppContainer &action);
     float get_reward();

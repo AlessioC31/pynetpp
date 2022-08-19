@@ -60,17 +60,17 @@ class MinimalEnv : public cNullEnvir {
     }
 };
 
-PynetppSpace& PynetppEnv::get_observation_space() {
-    PynetppBoxSpace* space =
-        new PynetppBoxSpace(0, 10000, std::vector<uint32_t>{3}, FLOAT);
+PynetppSpace* PynetppEnv::get_observation_space() {
+    auto* space =
+        new PynetppBoxSpace(0, 10000, std::vector<uint32_t>{3, 4}, FLOAT);
 
-    return *space;
+    return space;
 }
 
-PynetppSpace& PynetppEnv::get_action_space() {
-    PynetppDiscreteSpace* space = new PynetppDiscreteSpace(4);
+PynetppSpace* PynetppEnv::get_action_space() {
+    auto* space = new PynetppDiscreteSpace(4);
 
-    return *space;
+    return space;
 }
 
 PynetppContainer& PynetppEnv::get_observation() {
