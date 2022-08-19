@@ -3,8 +3,8 @@ OMNET_INCLUDES = -I$(OMNETPP_ROOT)/include
 OMNET_LIBFLAGS = -L$(OMNETPP_ROOT)/lib
 BINDINGS_TARGET = omnetgym$(shell python3-config --extension-suffix)
 PYBIND11_INCLUDES = `python3 -m pybind11 --includes`
-CXXFLAGS_DEBUG = -O0 -Wall -std=c++20 -fPIC -g
-CXXFLAGS_RELEASE = -O3 -Wall -std=c++20 -fPIC
+CXXFLAGS_DEBUG = -O0 -Wall -std=c++17 -fPIC -g
+CXXFLAGS_RELEASE = -O3 -Wall -std=c++17 -fPIC
 OMNET_LIBRARY_NAME_DEBUG = oppsim_dbg
 OMNET_LIBRARY_NAME_RELEASE = oppsim
 
