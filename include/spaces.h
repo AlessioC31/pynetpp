@@ -9,8 +9,8 @@
 class PynetppSpace {
    public:
     PynetppSpace(){};
-    inline virtual std::string get_space_type() const = 0;
-    virtual ~PynetppSpace();
+    virtual std::string get_space_type() const = 0;
+    virtual ~PynetppSpace() {}
 };
 
 class PynetppDiscreteSpace : public PynetppSpace {
