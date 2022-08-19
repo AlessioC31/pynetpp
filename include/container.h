@@ -14,15 +14,19 @@
 
 class PynetppContainer {
    public:
-    PynetppContainer(){};
+    PynetppContainer() = default;
     virtual std::string get_type() const = 0;
-    virtual ~PynetppContainer();
+    PynetppContainer(const PynetppContainer &) = default;
+    PynetppContainer(PynetppContainer &&) = default;
+    PynetppContainer &operator=(const PynetppContainer &) = default;
+    PynetppContainer &operator=(PynetppContainer &&) = default;
+    virtual ~PynetppContainer() = default;
 };
 
 class PynetppDiscreteContainer : public PynetppContainer {
    public:
     PynetppDiscreteContainer();
-    PynetppDiscreteContainer(uint32_t n);
+    explicit PynetppDiscreteContainer(uint32_t n);
     // virtual ~PynetppDiscreteContainer();
 
     void set_value(uint32_t value);
@@ -35,13 +39,14 @@ class PynetppDiscreteContainer : public PynetppContainer {
 };
 
 template <typename T = float>
-class PynetppBoxContainer : public PynetppContainer {
+class PynetppBoxContainer  // NOLINT(cppcoreguidelines-special-member-functions)
+    : public PynetppContainer {
    public:
     PynetppBoxContainer();
-    PynetppBoxContainer(std::vector<uint32_t> shape);
+    explicit PynetppBoxContainer(std::vector<uint32_t> shape);
     PynetppBoxContainer(const PynetppBoxContainer &that);
     PynetppBoxContainer(PynetppBoxContainer &&that) noexcept;
-    ~PynetppBoxContainer() { delete[] inner_data; }
+    ~PynetppBoxContainer() override { delete[] inner_data; }
 
     // void add_value(T value);
     // T get_value(uint32_t idx);
@@ -75,26 +80,23 @@ class PynetppBoxContainer : public PynetppContainer {
 
    private:
     std::vector<uint32_t> space_shape;
-    T *inner_data;
+    T* inner_data;
     std::vector<uint32_t> strides;
     uint32_t size;
     PynetppDType space_dtype;
 };
 
 template <typename T>
-PynetppBoxContainer<T>::PynetppBoxContainer() {
-    space_dtype = get_dtype<T>();
-    inner_data = nullptr;
-}
+PynetppBoxContainer<T>::PynetppBoxContainer()
+    : inner_data(nullptr), size(0), space_dtype(get_dtype<T>()) {}
 
 template <typename T>
-PynetppBoxContainer<T>::PynetppBoxContainer(const PynetppBoxContainer &that) {
+PynetppBoxContainer<T>::PynetppBoxContainer(const PynetppBoxContainer &that)
+    : inner_data(new T[that.size]()),
+      space_dtype(that.space_dtype),
+      strides(that.strides),
+      size(that.size) {
     // TODO: what if that is an empy container (shape.size() == 0)
-    space_shape = that.space_shape;
-    strides = that.strides;
-    size = that.size;
-    space_dtype = that.space_dtype;
-    inner_data = new T[size]();
 
     std::memcpy(inner_data, that.inner_data, sizeof(T) * size);
 }
@@ -168,11 +170,11 @@ T PynetppBoxContainer<T>::operator()(std::vector<uint32_t> idxs) const {
 }
 
 template <typename T>
-PynetppBoxContainer<T>::PynetppBoxContainer(std::vector<uint32_t> shape) {
-    space_dtype = get_dtype<T>();
-    space_shape = shape;
-    size = std::accumulate(shape.begin(), shape.end(), 1, std::multiplies<T>());
-
+PynetppBoxContainer<T>::PynetppBoxContainer(std::vector<uint32_t> shape)
+    : space_dtype(get_dtype<T>()),
+      space_shape(shape),
+      size(std::accumulate(shape.begin(), shape.end(), 1,
+                           std::multiplies<T>())) {
     uint32_t temp_size = size;
 
     for (uint32_t dim : space_shape) {
