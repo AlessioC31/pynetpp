@@ -18,16 +18,16 @@ PynetppBoxSpace::PynetppBoxSpace(float low, float high,
       space_high(high),
       space_shape(shape),
       space_dtype(dtype) {}
-PynetppBoxSpace::PynetppBoxSpace(std::vector<float> low,
-                                 std::vector<float> high,
-                                 std::vector<uint32_t> shape,
-                                 PynetppDType dtype)
-    : space_low(0),
-      space_high(0),
-      space_shape(shape),
-      space_dtype(dtype),
-      space_low_vect(low),
-      space_high_vect(high) {}
+// PynetppBoxSpace::PynetppBoxSpace(std::vector<float> low,
+//                                  std::vector<float> high,
+//                                  std::vector<uint32_t> shape,
+//                                  PynetppDType dtype)
+//     : space_low(0),
+//       space_high(0),
+//       space_shape(shape),
+//       space_dtype(dtype),
+//       space_low_vect(low),
+//       space_high_vect(high) {}
 
 float PynetppBoxSpace::get_low() { return space_low; }
 

@@ -29,8 +29,8 @@ class PynetppBoxSpace : public PynetppSpace {
     PynetppBoxSpace();
     PynetppBoxSpace(float low, float high, std::vector<uint32_t> shape,
                     PynetppDType dtype);
-    PynetppBoxSpace(std::vector<float> low, std::vector<float> high,
-                    std::vector<uint32_t> shape, PynetppDType dtype);
+    // PynetppBoxSpace(std::vector<float> low, std::vector<float> high,
+    //                 std::vector<uint32_t> shape, PynetppDType dtype);
     // virtual ~PynetppBoxSpace();
 
     float get_low();
@@ -45,7 +45,7 @@ class PynetppBoxSpace : public PynetppSpace {
     float space_high;
     std::vector<uint32_t> space_shape;
     PynetppDType space_dtype;
-    std::vector<float> space_low_vect;
-    std::vector<float> space_high_vect;
+    // std::vector<float> space_low_vect;
+    // std::vector<float> space_high_vect;
 };
 #endif
