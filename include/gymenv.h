@@ -18,6 +18,8 @@ class PynetppEnv {
 
     PynetppSpace *get_observation_space();
     PynetppSpace *get_action_space();
+
+    // TODO: this should return a pointer
     PynetppContainer &get_observation();
     void execute_action(PynetppContainer &action);
     float get_reward();
