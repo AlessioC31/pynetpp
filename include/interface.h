@@ -1,5 +1,6 @@
 #include <omnetpp.h>
 
+#include "container.h"
 #include "gymenv.h"
 
 #ifndef gym_env_interface
@@ -10,7 +11,7 @@ class PynetppInterface {
     // PynetppInterface::PynetppInterface(omnetpp::cSimulation* sim, PynetppEnv*
     // env) : _sim(sim), _env(env) {};
     void startup();
-    void execute_step();
+    void execute_step(int steps);
     void reset();
     void stop();
 
