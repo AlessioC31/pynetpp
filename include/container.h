@@ -25,12 +25,20 @@ class PynetppContainer {
 
 class PynetppDiscreteContainer : public PynetppContainer {
    public:
-    PynetppDiscreteContainer();
-    explicit PynetppDiscreteContainer(uint32_t n);
+    PynetppDiscreteContainer() : space_n(0) {}
+    explicit PynetppDiscreteContainer(uint32_t n) : space_n(n) {}
     // virtual ~PynetppDiscreteContainer();
 
-    void set_value(uint32_t value);
-    uint32_t get_value() const;
+    void set_value(uint32_t value) {
+        if (value >= space_n) {
+            throw std::out_of_range(
+                "Value is out of range for this container.");
+        }
+
+        inner_value = value;
+    }
+
+    inline uint32_t get_value() const { return inner_value; }
     inline std::string get_type() const override { return "discrete"; }
 
    private:
@@ -55,6 +63,7 @@ class PynetppBoxContainer  // NOLINT(cppcoreguidelines-special-member-functions)
     // std::vector<T> get_data();
     // inline void set_data(T* data) { inner_data = data; }
     inline T *get_data() { return inner_data; }
+    inline void set_data(T *data) { inner_data = data; }
     inline uint32_t get_size() { return size; }
     inline std::vector<uint32_t> get_strides() { return strides; }
     inline std::vector<uint32_t> get_shape() { return space_shape; }
@@ -98,7 +107,6 @@ PynetppBoxContainer<T>::PynetppBoxContainer(const PynetppBoxContainer &that)
       size(that.size),
       space_dtype(that.space_dtype) {
     // TODO: what if that is an empy container (shape.size() == 0)
-
     std::memcpy(inner_data, that.inner_data, sizeof(T) * size);
 }
 
@@ -118,6 +126,7 @@ PynetppBoxContainer<T> &PynetppBoxContainer<T>::operator=(
 
 // TODO: fix throw message with formatting
 // TODO: maybe change vector to something else
+// TODO: check bounds with space
 template <typename T>
 T &PynetppBoxContainer<T>::operator()(std::vector<uint32_t> idxs) {
     if (idxs.size() != space_shape.size()) {
@@ -185,5 +194,4 @@ PynetppBoxContainer<T>::PynetppBoxContainer(std::vector<uint32_t> shape)
 
     inner_data = new T[size]();
 }
-
 #endif
