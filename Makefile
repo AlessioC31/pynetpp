@@ -2,7 +2,7 @@ CC = clang++
 OMNETPP_ROOT = /opt/omnetpp-6.0
 OMNET_INCLUDES = -I$(OMNETPP_ROOT)/include
 OMNET_LIBFLAGS = -L$(OMNETPP_ROOT)/lib
-BINDINGS_TARGET = omnetgym$(shell python3-config --extension-suffix)
+BINDINGS_TARGET = libpynetpp.so
 PYBIND11_INCLUDES = `python3 -m pybind11 --includes`
 CXXFLAGS_DEBUG = -O0 -Wall -std=c++17 -fPIC -g
 CXXFLAGS_RELEASE = -O3 -Wall -std=c++17 -fPIC
@@ -38,54 +38,21 @@ DIST = ./dist
 OBJS = $(SOURCES:$(SOURCE_DIR)/%.cc=$(O)/%.o)
 MODEL_OBJS = $(MODEL_SOURCES:$(MODEL_SOURCE_DIR)/%.cc=$(DIST)/%.o)
 BINDINGS_OBJS = $(BINDINGS_SOURCES:$(BINDINGS_DIR)/%.cc=$(DIST)/%.o)
-TEST_OBJS = $(TEST_SOURCES:$(TEST_DIR)/%.cc=$(TEST_DIR)/%.o)
 
-cleantest:
-	@rm $(TEST_DIR)/*.o
-	
-runtest: $(TEST_DIR)/test
-	./$(TEST_DIR)/test
-
-test: $(TEST_OBJS)
-	@echo Building tests
-	@$(CC) $(CXXFLAGS) -L/home/alessioc/pynetpp/build $(TEST_OBJS) -o $(TEST_DIR)/test -lomnetgym
-
-$(TEST_DIR)/%.o: $(TEST_DIR)/%.cc
-	@echo Compiling $@
-	@$(CC) $(CXXFLAGS) -Iinclude -c $< -o $@
-
-all: mainlib bindings
-
-bindings: $(DIST) $(BINDINGS_OBJS) $(MODEL_OBJS)
+bindings: $(DIST) $(BINDINGS_OBJS)
 	@echo Building python bindings with DEBUG=$(DEBUG)
-	@$(CC) $(CXXFLAGS) -shared $(OMNET_LIBFLAGS) $(PYBIND11_INCLUDES) -L/home/alessioc/pynetpp/build $(MODEL_OBJS) $(BINDINGS_OBJS) -o $(DIST)/$(BINDINGS_TARGET) -l$(OMNET_LIBRARY_NAME) -lomnetgym
+	@$(CC) $(CXXFLAGS) -shared -undefined dynamic_lookup $(OMNET_LIBFLAGS) $(PYBIND11_INCLUDES) $(BINDINGS_OBJS) -o $(DIST)/$(BINDINGS_TARGET) -l$(OMNET_LIBRARY_NAME)
 
 $(DIST)/%.o: $(BINDINGS_DIR)/%.cc
 	@echo Compiling $@
 	@$(CC) $(CXXFLAGS) $(OMNET_INCLUDES) $(PYBIND11_INCLUDES) -Iinclude -c $< -o $@
 	
-# makexec: $(DIST) $(MODEL_OBJS)
-# 	@echo Building executable with DEBUG=$(DEBUG)
-# 	@$(CC) $(CXXFLAGS) $(OMNET_LIBFLAGS) -L/home/alessioc/pynetpp/build $(MODEL_OBJS) -o $(DIST)/main -l$(OMNET_LIBRARY_NAME) -lomnetgym
-
 $(DIST):
 	@mkdir -p $(DIST)
 
 $(DIST)/%.o: $(MODEL_SOURCE_DIR)/%.cc
 	@echo Compiling $@
 	@$(CC) $(CXXFLAGS) $(OMNET_INCLUDES) -Iinclude -c $< -o $@
-	
-mainlib: $(O) $(OBJS)
-	@echo Building $@ with DEBUG=$(DEBUG)
-	@$(CC) $(CXXFLAGS) -shared $(OMNET_LIBFLAGS) $(OBJS) -o $(O)/$(TARGET) -l$(OMNET_LIBRARY_NAME)
-	@mv $(O)/$(TARGET) $(O)/lib$(TARGET).so
-$(O):
-	@mkdir -p $(O)
-
-$(O)/%.o: $(SOURCE_DIR)/%.cc
-	@echo Compiling $@
-	@$(CC) $(CXXFLAGS) $(OMNET_INCLUDES) -Iinclude -c $< -o $@
 
 clean:
-	@rm -rf $(O)
 	@rm -rf $(DIST)
