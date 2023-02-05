@@ -62,7 +62,7 @@ class MinimalEnv : public cNullEnvir {
 
 PynetppSpace* PynetppEnv::get_observation_space() {
     auto* space =
-        new PynetppBoxSpace(0, 10000, std::vector<uint32_t>{3, 4}, FLOAT);
+        new PynetppBoxSpace(0, 10000, std::vector<uint32_t>{4}, FLOAT);
 
     return space;
 }
@@ -113,29 +113,29 @@ PynetppInterface::PynetppInterface() {
     _sim = sim;
 }
 
-void PynetppInterface::startup() {
-    CodeFragments::executeAll(CodeFragments::STARTUP);
-    SimTime::setScaleExp(-12);
-    cSimulation::setActiveSimulation(_sim);
-    cSimulation::loadNedSourceFolder("model");
-    cSimulation::doneLoadingNedFiles();
+// void PynetppInterface::startup() {
+//     CodeFragments::executeAll(CodeFragments::STARTUP);
+//     SimTime::setScaleExp(-12);
+//     cSimulation::setActiveSimulation(_sim);
+//     cSimulation::loadNedSourceFolder("model");
+//     cSimulation::doneLoadingNedFiles();
 
-    cModuleType* networkType = cModuleType::find("Loadbalancernet");
+//     cModuleType* networkType = cModuleType::find("Loadbalancernet");
 
-    if (networkType == nullptr) {
-        // TODO: throw something
-        printf("network not found \n");
-    }
+//     if (networkType == nullptr) {
+//         // TODO: throw something
+//         printf("network not found \n");
+//     }
 
-    _sim->setupNetwork(networkType);
-    _sim->setSimulationTimeLimit(100);
+//     _sim->setupNetwork(networkType);
+//     _sim->setSimulationTimeLimit(100);
 
-    _sim->callInitialize();
-}
+//     _sim->callInitialize();
+// }
 
-void PynetppInterface::execute_step() {
+void PynetppInterface::execute_step(int steps) {
     // try {
-    for (int i = 0; i < 5; i++) {
+    for (int i = 0; i < steps; i++) {
         cEvent* event = _sim->takeNextEvent();
 
         if (event) {

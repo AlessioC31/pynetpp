@@ -131,3 +131,7 @@ dmypy.json
 *.o
 .vscode
 backup
+*.json
+examples/*
+test*
+test/*
