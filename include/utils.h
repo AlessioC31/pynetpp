@@ -7,7 +7,7 @@
 class MinimalEnv : public omnetpp::envir::EnvirBase {
    public:
     MinimalEnv(omnetpp::cConfiguration *c) : omnetpp::envir::EnvirBase() {
-        cfg = dynamic_cast<omnetpp::cConfigurationEx *>(c);
+        cfg = static_cast<omnetpp::cConfigurationEx *>(c);
         opt = createOptions();
         args = new omnetpp::envir::ArgList();
     }
@@ -16,7 +16,6 @@ class MinimalEnv : public omnetpp::envir::EnvirBase {
         cfg->activateConfig("General", 0);
         readPerRunOptions();
         xmlCache = new omnetpp::envir::XMLDocCache();
-
         return true;
         // return ::envir::EnvirBase::setup();
     }
